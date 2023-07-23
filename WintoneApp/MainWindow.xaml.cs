@@ -18,7 +18,8 @@ namespace WintoneApp
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var view=Ioc.Default.GetRequireView<DemoView, DemoViewModel>();
+            //var view=Ioc.Default.GetRequireView<DemoView, DemoViewModel>();
+            var view = Ioc.Default.GetRequireView<PassportView,PassportViewModel>();
 
             Content = view;
         }

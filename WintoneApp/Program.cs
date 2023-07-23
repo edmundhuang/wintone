@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 using Serilog;
 using System;
 using System.IO;
@@ -13,14 +14,20 @@ namespace WintoneApp
 {
     public class Program
     {
+        public static IConfiguration Configuration { get; private set; }    
+
         [STAThread]
         public static void Main(string[] args)
         {
-            var host = CreateDefaultHost(args);
+            using (var host = CreateDefaultHost(args))
+            {
+                host.StartAsync();
 
-            var app= host.Services.GetRequiredService<App>();
+                var app = host.Services.GetRequiredService<App>();
+                app.Run();
 
-            app.Run();
+                host.StopAsync();
+            }
         }
 
         private static IHost CreateDefaultHost(string[] args)
@@ -39,6 +46,9 @@ namespace WintoneApp
            .UseSerilog()
            .Build();
 
+            Configuration= host.Services.GetRequiredService<IConfiguration>();  
+                       
+
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
                 var loggerFactory = host.Services.GetService<ILoggerFactory>();
@@ -55,6 +65,9 @@ namespace WintoneApp
         {
             services.AddTransient<DemoView>();
             services.AddTransient<DemoViewModel>();
+
+            services.AddTransient<PassportView>();
+            services.AddTransient<PassportViewModel>();
         }
 
         public static void InitSerialLog()
