@@ -1,15 +1,13 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Windows.Controls;
-using WpfApp6.ViewModels;
+﻿using System.Windows.Controls;
 
-namespace WpfApp6.Views
+namespace WintoneApp.Views
 {
     /// <summary>
     /// MainView.xaml 的交互逻辑
     /// </summary>
-    public partial class MainView : UserControl
+    public partial class DemoView : UserControl
     {
-        public MainView()
+        public DemoView()
         {
             InitializeComponent();
 

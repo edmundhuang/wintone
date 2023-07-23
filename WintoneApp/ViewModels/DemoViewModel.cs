@@ -2,9 +2,9 @@
 using CommunityToolkit.Mvvm.Input;
 using System;
 
-namespace WpfApp6.ViewModels
+namespace WintoneApp.ViewModels
 {
-    public partial class MainViewModel : ObservableObject
+    public partial class DemoViewModel : ObservableObject
     {
         [ObservableProperty]
         private string title="Hello world";
@@ -20,7 +20,7 @@ namespace WpfApp6.ViewModels
             return false;
         }
 
-        public MainViewModel()
+        public DemoViewModel()
         {
                 
         }

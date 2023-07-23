@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
-namespace WpfApp6
+namespace WintoneApp
 {
     /// <summary>
     /// Interaction logic for App.xaml

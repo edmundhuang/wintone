@@ -1,12 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using WpfApp6.ViewModels;
+using WintoneApp.ViewModels;
 
-namespace WpfApp6.Core
+namespace WintoneApp.Core
 {
     public class ViewModelLocator
     {
-        public MainViewModel MainViewModel
-            => Ioc.Default.GetRequiredService<MainViewModel>();
+        public DemoViewModel DemoViewModel
+            => Ioc.Default.GetRequiredService<DemoViewModel>();
 
         //public T ViewModel<T>()
         //    => Ioc.Default.GetService<T>();

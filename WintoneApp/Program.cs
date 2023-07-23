@@ -6,10 +6,10 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.IO;
-using WpfApp6.ViewModels;
-using WpfApp6.Views;
+using WintoneApp.ViewModels;
+using WintoneApp.Views;
 
-namespace WpfApp6
+namespace WintoneApp
 {
     public class Program
     {
@@ -53,8 +53,8 @@ namespace WpfApp6
 
         private static void RegisterServices(IServiceCollection services)
         {
-            services.AddTransient<MainView>();
-            services.AddTransient<MainViewModel>();
+            services.AddTransient<DemoView>();
+            services.AddTransient<DemoViewModel>();
         }
 
         public static void InitSerialLog()
