@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33712.159
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfApp6", "WpfApp6\WpfApp6.csproj", "{7B9F8E88-61F0-4E5E-9D4D-D59D8C030982}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. Docs", "0. Docs", "{614E1EED-ACC4-4739-83E1-4330381F2248}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7B9F8E88-61F0-4E5E-9D4D-D59D8C030982}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B9F8E88-61F0-4E5E-9D4D-D59D8C030982}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B9F8E88-61F0-4E5E-9D4D-D59D8C030982}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B9F8E88-61F0-4E5E-9D4D-D59D8C030982}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E0949FA0-8ABD-4CFB-B5FD-32B2279DCDA7}
+	EndGlobalSection
+EndGlobal
