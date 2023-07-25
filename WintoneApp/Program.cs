@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.IO;
+using WintoneApp.Core.Wintone;
 using WintoneApp.ViewModels;
 using WintoneApp.Views;
 
@@ -14,7 +15,7 @@ namespace WintoneApp
 {
     public class Program
     {
-        public static IConfiguration Configuration { get; private set; }    
+        public static IConfiguration Configuration { get; private set; }
 
         [STAThread]
         public static void Main(string[] args)
@@ -36,18 +37,20 @@ namespace WintoneApp
             Log.Information("Starting app.");
 
             var host = Host.CreateDefaultBuilder(args)
-           .ConfigureServices(services =>
-           {
-               services.AddSingleton<App>();
-               services.AddSingleton<MainWindow>();
+                .ConfigureAppConfiguration(configBuilder =>
+                {
+                    Configuration = configBuilder.Build();
+                })
+                .ConfigureServices(services =>
+                {
+                    services.AddSingleton<App>();
+                    services.AddSingleton<MainWindow>();
+                    
+                    RegisterServices(services);
+                })
+                .UseSerilog()
+                .Build();
 
-               RegisterServices(services);
-           })
-           .UseSerilog()
-           .Build();
-
-            Configuration= host.Services.GetRequiredService<IConfiguration>();  
-                       
 
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
@@ -63,11 +66,19 @@ namespace WintoneApp
 
         private static void RegisterServices(IServiceCollection services)
         {
+            //ui 
             services.AddTransient<DemoView>();
             services.AddTransient<DemoViewModel>();
 
             services.AddTransient<PassportView>();
             services.AddTransient<PassportViewModel>();
+
+            //custom service
+            services.AddSingleton<CardReader>();
+
+
+            //configuration 
+            services.Configure<WintoneOptions>(Configuration.GetSection(WintoneOptions.Key));
         }
 
         public static void InitSerialLog()

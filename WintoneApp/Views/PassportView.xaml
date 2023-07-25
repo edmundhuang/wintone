@@ -4,9 +4,36 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WintoneApp.Views"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:vm="clr-namespace:WintoneApp.ViewModels"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=vm:PassportViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="Margin" Value="8" />
+            <Setter Property="Width" Value="120" />
+        </Style>
+    </UserControl.Resources>
     <Grid>
-            
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50*"></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition Width="50*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Background="LightBlue" Margin="8" >
+            <StackPanel HorizontalAlignment="Left">
+                <Button Content="初始化阅读器" Command="{Binding InitReaderCommand}"></Button>
+                <Button Content="手动读卡" Command="{Binding ScanCommand}"></Button>
+                <Button Content="开始监视" Command="{Binding StartWatchCommand}"></Button>
+            </StackPanel>
+        </Grid>
+        <GridSplitter Width="5" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0 8 0 8"/>
+        <Grid Grid.Column="2" Background="LightYellow" Margin="8">
+            <StackPanel HorizontalAlignment="Left">
+                
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>
