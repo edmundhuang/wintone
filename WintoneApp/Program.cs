@@ -74,7 +74,7 @@ namespace WintoneApp
             services.AddTransient<PassportViewModel>();
 
             //custom service
-            services.AddSingleton<CardReader>();
+            services.AddSingleton<ReaderManager>();
 
 
             //configuration 
