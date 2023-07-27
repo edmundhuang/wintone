@@ -6,33 +6,32 @@ namespace WintoneApp.ViewModels
 {
     public partial class PassportViewModel : ObservableObject
     {
-        private readonly ReaderManager _cardReader;
+        private readonly ReaderManager _readerManager;
 
         public PassportViewModel() { }
-        public PassportViewModel(ReaderManager cardReader)
+        public PassportViewModel(ReaderManager readerManager)
         {
-            _cardReader = cardReader;
+            _readerManager = readerManager;
         }
 
         [RelayCommand]
         public void InitReader()
         {
-            if (_cardReader == null) return;
+            if (_readerManager == null) return;
 
-            _cardReader.LoadKernel();
-            _cardReader.InitDevice();
+            _readerManager.InitDevice();
         }
 
         [RelayCommand]
         public void StartWatch()
         {
-            _cardReader.StartWatch();
+            _readerManager.StartWatch();
         }
 
         [RelayCommand]
         public void Scan()
         {
-            _cardReader.Scan();
+            _readerManager.Scan();
         }
     }
 }

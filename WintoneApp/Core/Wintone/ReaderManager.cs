@@ -27,13 +27,18 @@ namespace WintoneApp.Core.Wintone
             _logger = logger;
             _options = options.Value;
 
-            
+            _device = new CardDevice();
+        }
+
+        public void InitDevice()
+        {
+            _device.InitDevice(_options.LibraryPath, _options.UserId);
         }
 
         private DispatcherTimer _timer;
         public void StartWatch()
         {
-            if (!IsReady) return;
+            if (!_device.IsReady) return;
 
             if (_timer == null)
             {
@@ -51,40 +56,40 @@ namespace WintoneApp.Core.Wintone
         {
             _device.Scan();
 
-            if (!IsDeviceOnline)
-            {
-                _logger.LogWarning("Reader is offline. Please check power and cable.");
-                return;
-            }
+            //if (!_device.IsDeviceOnline)
+            //{
+            //    _logger.LogWarning("Reader is offline. Please check power and cable.");
+            //    return;
+            //}
 
-            //int[] nSubID = new int[] { 0 };
-            ////nSubID[0] = 0;
+            ////int[] nSubID = new int[] { 0 };
+            //////nSubID[0] = 0;
 
-            int[] nSubID = new int[1];
-            nSubID[0] = 0;
+            //int[] nSubID = new int[1];
+            //nSubID[0] = 0;
 
-            pResetIDCardID();
-            int nRet = pAddIDCardID(nCardType, nSubID, 1);
+            //pResetIDCardID();
+            //int nRet = pAddIDCardID(nCardType, nSubID, 1);
 
-            //get param
-            int nDG = 0;
-            int nSaveImage = 1;
+            ////get param
+            //int nDG = 0;
+            //int nSaveImage = 1;
 
-            bool bVIZ = true;
+            //bool bVIZ = true;
 
-            int cardType = 0;
+            //int cardType = 0;
 
-            pSetRecogDG(nDG);
-            pSetSaveImageType(nSaveImage);
-            pSetRecogVIZ(bVIZ);
+            //pSetRecogDG(nDG);
+            //pSetSaveImageType(nSaveImage);
+            //pSetRecogVIZ(bVIZ);
 
-            nRet = pAutoProcessIDCard(ref cardType);
+            //nRet = pAutoProcessIDCard(ref cardType);
 
-            if (nRet > 0)
-            {
-                var result = GetContent();
-                _logger.LogInformation("card result: {0}", JsonSerializer.Serialize(result));
-            }
+            //if (nRet > 0)
+            //{
+            //    var result = GetContent();
+            //    _logger.LogInformation("card result: {0}", JsonSerializer.Serialize(result));
+            //}
         }
 
         private int nCardType = 13;
@@ -92,41 +97,7 @@ namespace WintoneApp.Core.Wintone
         {
             Scan();
         }
-
-        //public bool LoadKernel(string fileName)
-        //{
-        //    if (!File.Exists(fileName))
-        //    {
-        //        _logger.LogWarning("Dll file {0} not found.", DLLPath);
-        //        return false;
-        //    }
-
-        //    if (IsReady) return true;
-
-        //    IntPtr hModule = DLLHelper.LoadLibrary(DLLPath);
-
-        //    pInitIDCard = (InitIDCard)DLLHelper.LoadFunction<InitIDCard>(hModule, "InitIDCard");
-        //    pFreeIDCard = (FreeIDCard)DLLHelper.LoadFunction<FreeIDCard>(hModule, "FreeIDCard");
-
-        //    pAutoProcessIDCard = (AutoProcessIDCard)DLLHelper.LoadFunction<AutoProcessIDCard>(hModule, "AutoProcessIDCard");
-
-        //    pCheckDeviceOnline = (CheckDeviceOnline)DLLHelper.LoadFunction<CheckDeviceOnline>(hModule, "CheckDeviceOnline");
-        //    pDetectDocument = (DetectDocument)DLLHelper.LoadFunction<DetectDocument>(hModule, "DetectDocument");
-
-        //    pResetIDCardID = (ResetIDCardID)DLLHelper.LoadFunction<ResetIDCardID>(hModule, "ResetIDCardID");
-        //    pAddIDCardID = (AddIDCardID)DLLHelper.LoadFunction<AddIDCardID>(hModule, "AddIDCardID");
-
-        //    pSetRecogVIZ = (SetRecogVIZ)DLLHelper.LoadFunction<SetRecogVIZ>(hModule, "SetRecogVIZ");
-        //    pSetConfigByFile = (SetConfigByFile)DLLHelper.LoadFunction<SetConfigByFile>(hModule, "SetConfigByFile");
-        //    pSetRecogDG = (SetRecogDG)DLLHelper.LoadFunction<SetRecogDG>(hModule, "SetRecogDG");
-        //    pSetSaveImageType = (SetSaveImageType)DLLHelper.LoadFunction<SetSaveImageType>(hModule, "SetSaveImageType");
-
-        //    pGetRecogResultEx = (GetRecogResultEx)DLLHelper.LoadFunction<GetRecogResultEx>(hModule, "GetRecogResultEx");
-
-        //    pGetFieldNameEx = (GetFieldNameEx)DLLHelper.LoadFunction<GetFieldNameEx>(hModule, "GetFieldNameEx");
-
-        //    return pInitIDCard != null;
-        //}
+       
 
         //public bool InitDevice()
         //{
@@ -176,57 +147,39 @@ namespace WintoneApp.Core.Wintone
         private bool isRunning;
         public void AutoClassAndRecognize()
         {
-            if (!IsReady) return;
-
-            if (isRunning) return;
+            if (!_device.IsReady) return;
 
             isRunning = true;
 
-            var nRet = pDetectDocument();
-
-            if (nRet == 1)
-            {
-                int nCardType = 0;
-                nRet = pAutoProcessIDCard(ref nCardType);
-
-                if (nRet > 0)
-                {
-                    var result = GetContent();
-
-                    _logger.LogInformation("card result: {0}", JsonSerializer.Serialize(result));
-                }
-            }
+            _device.Scan();
 
             isRunning = false;
+
+            //if (!IsReady) return;
+
+            //if (isRunning) return;
+
+            //isRunning = true;
+
+            //var nRet = pDetectDocument();
+
+            //if (nRet == 1)
+            //{
+            //    int nCardType = 0;
+            //    nRet = pAutoProcessIDCard(ref nCardType);
+
+            //    if (nRet > 0)
+            //    {
+            //        var result = GetContent();
+
+            //        _logger.LogInformation("card result: {0}", JsonSerializer.Serialize(result));
+            //    }
+            //}
+
+            //isRunning = false;
         }
 
-        private Dictionary<string, string> GetContent()
-        {
-            Dictionary<string, string> result = new();
-
-            int MAX_CH_NUM = 128;
-            int nBufLen = MAX_CH_NUM * sizeof(byte);
-
-            for (int i = 0; ; i++)
-            {
-                string cArrFieldValue = new string('\0', MAX_CH_NUM);
-                string cArrFieldName = new('\0', MAX_CH_NUM);
-
-                int nRet = pGetRecogResultEx(1, i, cArrFieldValue, ref nBufLen);
-                if (nRet == 3)
-                    break;
-
-                nBufLen = MAX_CH_NUM * sizeof(byte);
-                pGetFieldNameEx(1, i, cArrFieldName, ref nBufLen);
-
-                if (string.IsNullOrEmpty(cArrFieldName)) continue;
-
-                result.TryAdd(cArrFieldName, cArrFieldValue);
-                //nBufLen = MAX_CH_NUM * sizeof(byte);
-            }
-
-            return result;
-        }
+      
 
         public string DLLPath
         {
@@ -250,9 +203,10 @@ namespace WintoneApp.Core.Wintone
 
         public void Dispose()
         {
-            if (pFreeIDCard == null) return;
-
-            pFreeIDCard();
+            if (_device == null) return;
+            _device.Dispose();
         }
+
+       
     }
 }
