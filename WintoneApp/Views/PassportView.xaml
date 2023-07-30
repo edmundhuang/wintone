@@ -31,8 +31,22 @@
         </Grid>
         <GridSplitter Width="5" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0 8 0 8"/>
         <Grid Grid.Column="2" Background="LightYellow" Margin="8">
-            <StackPanel HorizontalAlignment="Left">
-                
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Serial No" Margin="8" Width="100"></TextBlock>
+                    <TextBlock Text="{Binding SerialNo}" Margin="8" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Device Name" Margin="8" Width="120"></TextBlock>
+                    <TextBlock Text="{Binding DeviceName}" Margin="8" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="SDK Version" Margin="8" Width="120"></TextBlock>
+                    <TextBlock Text="{Binding Version}" Margin="8" />
+                </StackPanel>
+                <StackPanel>
+                    <TextBox Text="{Binding IdResult}"  TextWrapping="Wrap"  AcceptsReturn="True"  VerticalScrollBarVisibility="Visible" Height="300" />
+                </StackPanel>
             </StackPanel>
         </Grid>
     </Grid>

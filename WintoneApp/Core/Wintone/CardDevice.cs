@@ -1,8 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.Json;
 using System.Windows;
 using WintoneApp.Core.Helpers;
@@ -36,7 +39,19 @@ namespace WintoneApp.Core.Wintone
         //SID
         delegate int SDT_OpenPort(int iPort);
         delegate int SDT_ClosePort(int iPort);
+        delegate int SDT_StartFindIDCard(int iPort, ref byte pRAPDU, int iIfOpen);
+        delegate int SDT_SelectIDCard(int iPort, ref byte pRAPDU, int iIfOpen);
+        delegate int SDT_ReadBaseMsg(int iPort, ref byte pucCHMsg, ref int puiCHMsgLen, ref byte pucPHMsg, ref int puiPHMsgLen, int iIfOpen);
+        delegate int SDT_ReadNewAppMsg(int iPort, ref byte pucAppMsg, ref int puiAppMsgLen, int iIfOpen);
+        delegate int GetBmp(string filename, int nType);
+        delegate int SDT_GetSAMIDToStr(int iPortID, ref byte pcSAMIDStr, int iIfOpen);
+        delegate int SDT_GetSAMID(int iPortID, ref byte pcSAMID, int iIfOpen);
 
+        delegate int GetDeviceSN([MarshalAs(UnmanagedType.LPWStr)] String ArrSn, int nLength);
+        delegate int GetCurrentDevice([MarshalAs(UnmanagedType.LPWStr)] String ArrDeviceName, int nLength);
+        delegate void GetVersionInfo([MarshalAs(UnmanagedType.LPWStr)] String ArrVersion, int nLength);
+
+        delegate int SaveImageEx([MarshalAs(UnmanagedType.LPWStr)] String lpFileName, int nType);
         #endregion "SDK"
 
         InitIDCard pInitIDCard;
@@ -60,6 +75,21 @@ namespace WintoneApp.Core.Wintone
 
         SDT_OpenPort pSDT_OpenPort;
         SDT_ClosePort pSDT_ClosePort;
+
+        SDT_StartFindIDCard pSDT_StartFindIDCard;
+        SDT_SelectIDCard pSDT_SelectIDCard;
+        SDT_ReadBaseMsg pSDT_ReadBaseMsg;
+        SDT_ReadNewAppMsg pSDT_ReadNewAppMsg;
+        GetBmp pGetBmp;
+        SDT_GetSAMIDToStr pSDT_GetSAMIDToStr;
+        SDT_GetSAMID pSDT_GetSAMID;
+
+        GetDeviceSN pGetDeviceSN;
+        GetCurrentDevice pGetCurrentDevice;
+
+        GetVersionInfo pGetVersionInfo;
+
+        SaveImageEx pSaveImageEx;
 
         public Action<LogLevel, string, object[]> LogFactory;
 
@@ -137,6 +167,13 @@ namespace WintoneApp.Core.Wintone
 
             pSDT_OpenPort = (SDT_OpenPort)DLLHelper.LoadFunction<SDT_OpenPort>(hModuleadi, "SDT_OpenPort");
             pSDT_ClosePort = (SDT_ClosePort)DLLHelper.LoadFunction<SDT_ClosePort>(hModuleadi, "SDT_ClosePort");
+            pSDT_StartFindIDCard = (SDT_StartFindIDCard)DLLHelper.LoadFunction<SDT_StartFindIDCard>(hModuleadi, "SDT_StartFindIDCard");
+            pSDT_SelectIDCard = (SDT_SelectIDCard)DLLHelper.LoadFunction<SDT_SelectIDCard>(hModuleadi, "SDT_SelectIDCard");
+            pSDT_ReadBaseMsg = (SDT_ReadBaseMsg)DLLHelper.LoadFunction<SDT_ReadBaseMsg>(hModuleadi, "SDT_ReadBaseMsg");
+            pSDT_ReadNewAppMsg = (SDT_ReadNewAppMsg)DLLHelper.LoadFunction<SDT_ReadNewAppMsg>(hModuleadi, "SDT_ReadNewAppMsg");
+            pSDT_GetSAMIDToStr = (SDT_GetSAMIDToStr)DLLHelper.LoadFunction<SDT_GetSAMIDToStr>(hModuleadi, "SDT_GetSAMIDToStr");
+            pSDT_GetSAMID = (SDT_GetSAMID)DLLHelper.LoadFunction<SDT_GetSAMID>(hModuleadi, "SDT_GetSAMID");
+
 
             return true;
         }
@@ -163,33 +200,34 @@ namespace WintoneApp.Core.Wintone
             pSetRecogDG = (SetRecogDG)DLLHelper.LoadFunction<SetRecogDG>(hModule, "SetRecogDG");
             pSetSaveImageType = (SetSaveImageType)DLLHelper.LoadFunction<SetSaveImageType>(hModule, "SetSaveImageType");
 
+            pGetDeviceSN = (GetDeviceSN)DLLHelper.LoadFunction<GetDeviceSN>(hModule, "GetDeviceSN");
+            pGetCurrentDevice = (GetCurrentDevice)DLLHelper.LoadFunction<GetCurrentDevice>(hModule, "GetCurrentDevice");
+            pGetVersionInfo = (GetVersionInfo)DLLHelper.LoadFunction<GetVersionInfo>(hModule, "GetVersionInfo");
+
             pGetRecogResultEx = (GetRecogResultEx)DLLHelper.LoadFunction<GetRecogResultEx>(hModule, "GetRecogResultEx");
 
             pGetFieldNameEx = (GetFieldNameEx)DLLHelper.LoadFunction<GetFieldNameEx>(hModule, "GetFieldNameEx");
 
+            pSaveImageEx = (SaveImageEx)DLLHelper.LoadFunction<SaveImageEx>(hModule, "SaveImageEx");
             return pInitIDCard != null;
         }
 
-        public void Scan()
+        public bool DocumentChanged()
+        {
+            int nRet = pDetectDocument();
+            return nRet == 1;
+        }
+
+        public string Scan()
         {
             if (!IsDeviceOnline)
             {
-
                 WriteLog("Reader is offline. Please check power and cable.", null, LogLevel.Warning);
-                return;
+                return string.Empty;
             }
 
-            int nCardType = 13;
-
-            int[] nSubID = new int[1];
-            nSubID[0] = 0;
-
-            pResetIDCardID();
-            int nRet = pAddIDCardID(nCardType, nSubID, 1);
-
-            //get param
-            int nDG = 0;
-            int nSaveImage = 1;
+            int nDG = 6150;
+            int nSaveImage = 3;
 
             bool bVIZ = true;
 
@@ -199,42 +237,63 @@ namespace WintoneApp.Core.Wintone
             pSetSaveImageType(nSaveImage);
             pSetRecogVIZ(bVIZ);
 
-            nRet = pAutoProcessIDCard(ref cardType);
+             nRet = pAutoProcessIDCard(ref cardType);
 
             if (nRet > 0)
             {
                 var result = GetContent();
-                WriteLog("card result: {0}", JsonSerializer.Serialize(result));
+                // WriteLog("card result: {0}", JsonSerializer.Serialize(result));
+
+                return result;
             }
+
+            return string.Empty;
         }
 
-        private Dictionary<string, string> GetContent()
+        public void SaveImage(string fileName)
         {
+            int nRet = pSaveImageEx(fileName, 3);
+        }
+
+        private string GetContent()
+        {
+            StringBuilder sb = new();
+
             Dictionary<string, string> result = new();
 
             int MAX_CH_NUM = 128;
             int nBufLen = MAX_CH_NUM * sizeof(byte);
 
+            NameValueCollection collection = new();
+
             for (int i = 0; ; i++)
             {
                 string cArrFieldValue = new string('\0', MAX_CH_NUM);
-                string cArrFieldName = new('\0', MAX_CH_NUM);
-
+                string cArrFieldName = new string('\0', MAX_CH_NUM);
                 int nRet = pGetRecogResultEx(1, i, cArrFieldValue, ref nBufLen);
                 if (nRet == 3)
                     break;
-
                 nBufLen = MAX_CH_NUM * sizeof(byte);
                 pGetFieldNameEx(1, i, cArrFieldName, ref nBufLen);
 
-                if (string.IsNullOrEmpty(cArrFieldName)) continue;
+                sb.Append(cArrFieldName.Trim('\0'));
+                sb.AppendLine(cArrFieldValue.Trim('\0'));
 
-                result.TryAdd(cArrFieldName, cArrFieldValue);
+                Add2Collection(collection, cArrFieldName, cArrFieldValue);
+                //result.TryAdd(cArrFieldName, cArrFieldValue);
             }
 
-            return result;
+            return sb.ToString();
         }
 
+
+        public void Add2Collection(NameValueCollection collection, string name, string value)
+        {
+            name = name.Trim('\0');
+            value = value.Trim('\0');
+
+            collection.Add(name, value);
+        }
 
         public bool IsDeviceOnline
         {
@@ -261,6 +320,34 @@ namespace WintoneApp.Core.Wintone
             if (pFreeIDCard == null) return;
 
             pFreeIDCard();
+        }
+
+        public string GetSerialNo()
+        {
+            var serialNo = new String('\0', 16);
+            int nRet = pGetDeviceSN(serialNo, 16);
+
+            if (nRet == 0) return serialNo;
+
+            return null;
+        }
+
+        public string GetDeviceName()
+        {
+            var result = new string('\0', 16);
+
+            int nRet = pGetCurrentDevice(result, 16);
+            if (nRet == 0) return result;
+
+            return null;
+        }
+
+        public string GetSDKVersion()
+        {
+            var result = new string('\0', 128);
+
+            pGetVersionInfo(result, 128);
+            return result;
         }
     }
 }

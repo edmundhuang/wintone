@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using WintoneApp.Core.Wintone;
+using System;
+using WintoneApp.Core.Passports;
 
 namespace WintoneApp.ViewModels
 {
@@ -20,7 +21,20 @@ namespace WintoneApp.ViewModels
             if (_readerManager == null) return;
 
             _readerManager.InitDevice();
+
+            ReadDeviceInfo();
         }
+
+        private void ReadDeviceInfo()
+        {
+            var result = _readerManager.ReadDevice();
+
+            SerialNo = result.SerialNo;
+            DeviceName = result.DeviceName;
+            Version = result.SDKVersion;
+        }
+
+        public bool CanInitReader()=> _readerManager.IsReady;
 
         [RelayCommand]
         public void StartWatch()
@@ -31,7 +45,21 @@ namespace WintoneApp.ViewModels
         [RelayCommand]
         public void Scan()
         {
-            _readerManager.Scan();
+           var result= _readerManager.Scan();
+
+            IdResult = result;
         }
+
+        [ObservableProperty]
+        private string serialNo;
+
+        [ObservableProperty]
+        private string deviceName;
+
+        [ObservableProperty]
+        private string version;
+
+        [ObservableProperty]
+        private string idResult;
     }
 }

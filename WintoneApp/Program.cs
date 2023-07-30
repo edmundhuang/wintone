@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.IO;
+using WintoneApp.Core.Passports;
 using WintoneApp.Core.Wintone;
 using WintoneApp.ViewModels;
 using WintoneApp.Views;
