@@ -37,12 +37,12 @@
                             <TextBlock Text="{Binding SerialNo}" Margin="8" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Device Name" Margin="8" Width="120"></TextBlock>
+                            <TextBlock Text="Device Name" Margin="8" Width="100"></TextBlock>
                             <TextBlock Text="{Binding DeviceName}" Margin="8" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="SDK Version" Margin="8" Width="120"></TextBlock>
-                            <TextBlock Text="{Binding Version}" Margin="8" />
+                            <TextBlock Text="SDK Version" Margin="8" Width="100"></TextBlock>
+                            <TextBlock Text="{Binding SDKVersion}" Margin="8" />
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>

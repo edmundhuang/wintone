@@ -239,13 +239,7 @@ namespace WintoneApp.Core.Wintone
 
             int nRet = pAutoProcessIDCard(ref cardType);
 
-            if (nRet > 0)
-            {
-                var result = GetContent();
-                // WriteLog("card result: {0}", JsonSerializer.Serialize(result));
-
-                return result;
-            }
+            if (nRet > 0) return GetContent();
 
             return string.Empty;
         }
@@ -259,12 +253,8 @@ namespace WintoneApp.Core.Wintone
         {
             StringBuilder sb = new();
 
-            Dictionary<string, string> result = new();
-
             int MAX_CH_NUM = 128;
             int nBufLen = MAX_CH_NUM * sizeof(byte);
-
-            NameValueCollection collection = new();
 
             for (int i = 0; ; i++)
             {
@@ -278,9 +268,6 @@ namespace WintoneApp.Core.Wintone
 
                 sb.Append(cArrFieldName.Trim('\0'));
                 sb.AppendLine(cArrFieldValue.Trim('\0'));
-
-                Add2Collection(collection, cArrFieldName, cArrFieldValue);
-                //result.TryAdd(cArrFieldName, cArrFieldValue);
             }
 
             return sb.ToString();
@@ -327,19 +314,17 @@ namespace WintoneApp.Core.Wintone
             var serialNo = new String('\0', 16);
             int nRet = pGetDeviceSN(serialNo, 16);
 
-            if (nRet == 0) return serialNo;
+            if (nRet == 0) return serialNo.Trim('\0');
 
             return null;
         }
 
         public string GetDeviceName()
         {
-            var result = new string('\0', 16);
+            var result = new string('\0', 128);
 
-            int nRet = pGetCurrentDevice(result, 16);
-            if (nRet == 0) return result;
-
-            return null;
+            pGetCurrentDevice(result, 128);
+            return result.Trim('\0');
         }
 
         public string GetSDKVersion()
@@ -347,7 +332,7 @@ namespace WintoneApp.Core.Wintone
             var result = new string('\0', 128);
 
             pGetVersionInfo(result, 128);
-            return result;
+            return result.Trim('\0');
         }
     }
 }
