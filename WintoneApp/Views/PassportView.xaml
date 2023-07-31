@@ -23,31 +23,43 @@
             <ColumnDefinition Width="50*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid Background="LightBlue" Margin="8" >
-            <StackPanel HorizontalAlignment="Left">
-                <Button Content="初始化阅读器" Command="{Binding InitReaderCommand}"></Button>
-                <Button Content="手动读卡" Command="{Binding ScanCommand}"></Button>
-                <Button Content="开始监视" Command="{Binding StartWatchCommand}"></Button>
+            <StackPanel HorizontalAlignment="Stretch">
+                <StackPanel HorizontalAlignment="Left">
+                    <Button Content="初始化阅读器" Command="{Binding InitReaderCommand}"></Button>
+                    <Button Content="手动读卡" Command="{Binding ScanCommand}"></Button>
+                    <Button Content="开始监视" Command="{Binding StartWatchCommand}"></Button>
+                </StackPanel>
+
+                <GroupBox Header="Device Info" Margin="8" Padding="8" BorderThickness="1" BorderBrush="DarkGray">
+                    <StackPanel DataContext="{Binding DeviceInfo}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Serial No" Margin="8" Width="100"></TextBlock>
+                            <TextBlock Text="{Binding SerialNo}" Margin="8" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Device Name" Margin="8" Width="120"></TextBlock>
+                            <TextBlock Text="{Binding DeviceName}" Margin="8" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="SDK Version" Margin="8" Width="120"></TextBlock>
+                            <TextBlock Text="{Binding Version}" Margin="8" />
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
             </StackPanel>
         </Grid>
         <GridSplitter Width="5" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0 8 0 8"/>
-        <Grid Grid.Column="2" Background="LightYellow" Margin="8">
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Serial No" Margin="8" Width="100"></TextBlock>
-                    <TextBlock Text="{Binding SerialNo}" Margin="8" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Device Name" Margin="8" Width="120"></TextBlock>
-                    <TextBlock Text="{Binding DeviceName}" Margin="8" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="SDK Version" Margin="8" Width="120"></TextBlock>
-                    <TextBlock Text="{Binding Version}" Margin="8" />
-                </StackPanel>
-                <StackPanel>
-                    <TextBox Text="{Binding IdResult}"  TextWrapping="Wrap"  AcceptsReturn="True"  VerticalScrollBarVisibility="Visible" Height="300" />
-                </StackPanel>
+        <Grid Grid.Column="2" Background="LightYellow" Margin="8" DataContext="{Binding Card}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Time" Margin="8" Width="100"></TextBlock>
+                <TextBlock Text="{Binding ScanTime}" Margin="8" />
             </StackPanel>
+            <TextBox Text="{Binding Result}" Grid.Row="1" VerticalAlignment="Stretch" BorderThickness="1"
+                             Margin="8" TextWrapping="Wrap" AcceptsReturn="True"  VerticalScrollBarVisibility="Visible"  />
         </Grid>
     </Grid>
 </UserControl>

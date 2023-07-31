@@ -17,6 +17,8 @@ namespace WintoneApp.Core.Passports
         private readonly WintoneOptions _options;
         private readonly CardDevice _device;
 
+        public event EventHandler<CardEventArgs> CardChanged;
+
         public ReaderManager(IOptions<WintoneOptions> options, ILogger<ReaderManager> logger)
         {
             _logger = logger;
@@ -29,7 +31,7 @@ namespace WintoneApp.Core.Passports
 
         private void WriteLog(LogLevel level, string msg, object[] args)
         {
-            _logger.Log(level, msg, args); 
+            _logger.Log(level, msg, args);
         }
 
         public void InitDevice()
@@ -50,12 +52,12 @@ namespace WintoneApp.Core.Passports
 
             result.SerialNo = _device.GetSerialNo();
             result.DeviceName = _device.GetDeviceName();
-            result.SDKVersion=_device.GetSDKVersion();
+            result.SDKVersion = _device.GetSDKVersion();
 
             return result;
         }
 
-        
+
 
         private DispatcherTimer _timer;
         public void StartWatch()
@@ -76,9 +78,9 @@ namespace WintoneApp.Core.Passports
 
         public string Scan()
         {
-            var result= _device.Scan();
+            var result = _device.Scan();
 
-            if(result == null) return null;
+            if (result == null) return null;
 
             var imageFileName = Path.GetFullPath(IMAGE_FILE_NAME);
             _device.SaveImage(imageFileName);
@@ -90,7 +92,9 @@ namespace WintoneApp.Core.Passports
         {
             if (!_device.DocumentChanged()) return;
 
-            Scan();
+            var result = Scan();
+
+            CardChanged.Invoke(null, new CardEventArgs { CardInfo = result });
         }
 
         private void LogInfo(string msg)
@@ -135,12 +139,5 @@ namespace WintoneApp.Core.Passports
             if (_device == null) return;
             _device.Dispose();
         }
-    }
-
-    public class DeviceInfo
-    {
-        public string SerialNo { get; set; }
-        public string DeviceName { get; set; }
-        public string SDKVersion { get;  set; }
     }
 }

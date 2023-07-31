@@ -237,7 +237,7 @@ namespace WintoneApp.Core.Wintone
             pSetSaveImageType(nSaveImage);
             pSetRecogVIZ(bVIZ);
 
-             nRet = pAutoProcessIDCard(ref cardType);
+            int nRet = pAutoProcessIDCard(ref cardType);
 
             if (nRet > 0)
             {
