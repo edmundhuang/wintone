@@ -31,6 +31,7 @@ namespace WintoneLib.Passports
 
         private void WriteLog(LogLevel level, string msg, object[] args)
         {
+            Console.WriteLine(msg, args);
             _logger.Log(level, msg, args);
         }
 

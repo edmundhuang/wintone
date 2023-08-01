@@ -98,7 +98,15 @@ namespace WintoneLib.Core
         {
             LibPath = libPath;
 
-            if (!LoadKernel(Path.Combine(libPath, IDCard_File_Name))) return false;
+            var result = LoadKernel(Path.Combine(libPath, IDCard_File_Name));
+            if (!result)
+            {
+                WriteLog("Load Kernel failed.");
+                return false;
+            }
+                
+
+            //if (!LoadKernel(Path.Combine(libPath, IDCard_File_Name))) return false;
 
             int nRet;
 
@@ -282,7 +290,7 @@ namespace WintoneLib.Core
 
         public bool IsDeviceOnline
         {
-            get => pCheckDeviceOnline!=null && pCheckDeviceOnline();
+            get => pCheckDeviceOnline != null && pCheckDeviceOnline();
         }
 
         public bool IsReady { get => pInitIDCard != null; }
