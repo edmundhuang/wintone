@@ -245,7 +245,16 @@ namespace WintoneLib.Core
 
             int nRet = pAutoProcessIDCard(ref cardType);
 
-            if (nRet > 0) return GetContent();
+            if (nRet > 0)
+            {
+                var content = GetContent();
+
+                //show DG info                 
+                if (1 == cardType)
+                    content = content + Environment.NewLine + "Digital Info" + Environment.NewLine + GetDGContent();
+
+                return content;
+            }
 
             return string.Empty;
         }
@@ -279,6 +288,31 @@ namespace WintoneLib.Core
             return sb.ToString();
         }
 
+        private string GetDGContent()
+        {
+            var sb = new StringBuilder();
+
+            int MAX_CH_NUM = 128;
+            int nBufLen = 42000;
+            for (int j = 0; ; j++)
+            {
+                string ArrFieldValue = new string('\0', nBufLen);
+                string ArrFieldName = new string('\0', MAX_CH_NUM);
+
+                int nResu = pGetRecogResultEx(0, j, ArrFieldValue, ref nBufLen);
+                if (nResu == 3)
+                    break;
+                nBufLen = MAX_CH_NUM * sizeof(byte);
+                pGetFieldNameEx(0, j, ArrFieldName, ref nBufLen);
+
+                sb.Append(ArrFieldName);
+                sb.Append(":");
+                sb.AppendLine(ArrFieldValue);
+                nBufLen = 42000;
+            }
+
+            return sb.ToString();
+        }
 
         public void Add2Collection(NameValueCollection collection, string name, string value)
         {
