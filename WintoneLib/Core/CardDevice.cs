@@ -273,19 +273,54 @@ namespace WintoneLib.Core
 
             for (int i = 0; ; i++)
             {
-                string cArrFieldValue = new string('\0', MAX_CH_NUM);
-                string cArrFieldName = new string('\0', MAX_CH_NUM);
-                int nRet = pGetRecogResultEx(1, i, cArrFieldValue, ref nBufLen);
-                if (nRet == 3)
-                    break;
-                nBufLen = MAX_CH_NUM * sizeof(byte);
-                pGetFieldNameEx(1, i, cArrFieldName, ref nBufLen);
+                var sValue = GetValue(i);
 
-                sb.Append(cArrFieldName.Trim('\0'));
-                sb.AppendLine(cArrFieldValue.Trim('\0'));
+                if (sValue == null) break;
+
+                var sName = GetName(i);
+                Console.Write(sName + ":");
+                Console.WriteLine(sValue);
+                sb.Append(sName + ":");
+                sb.AppendLine(sValue);
+
+                //string cArrFieldValue = new string('\0', MAX_CH_NUM);
+                //string cArrFieldName = new string('\0', MAX_CH_NUM);
+                //int nRet = pGetRecogResultEx(1, i, cArrFieldValue, ref nBufLen);
+                //if (nRet == 3)
+                //    break;
+                //nBufLen = MAX_CH_NUM * sizeof(byte);
+                //pGetFieldNameEx(1, i, cArrFieldName, ref nBufLen);
+                //nBufLen = MAX_CH_NUM * sizeof(byte);
+                //Console.Write(cArrFieldName);
+                //Console.WriteLine(cArrFieldValue);
+                //sb.Append(cArrFieldName);
+                //sb.AppendLine(cArrFieldValue);
             }
 
             return sb.ToString();
+        }
+        private string GetValue(int index)
+        {
+            int MAX_CH_NUM = 128;
+            int nBufLen = MAX_CH_NUM * sizeof(byte);
+            var sValue = new string('\0', MAX_CH_NUM);
+
+            int nRet = pGetRecogResultEx(1, index, sValue, ref nBufLen);
+
+            if (nRet == 0) return sValue.Substring(0, nBufLen);
+
+            return null;
+        }
+
+        private string GetName(int index)
+        {
+            int MAX_CH_NUM = 128;
+            int nBufLen = MAX_CH_NUM * sizeof(byte);
+            var sValue = new string('\0', MAX_CH_NUM);
+
+            pGetFieldNameEx(1, index, sValue, ref nBufLen);
+
+            return sValue.Substring(0, nBufLen);
         }
 
         private string GetDGContent()
