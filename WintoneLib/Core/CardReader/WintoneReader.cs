@@ -7,7 +7,7 @@ using WintoneLib.Core.Helpers;
 
 namespace WintoneLib.Core.CardReader
 {
-    public class WintoneReader: IDisposable
+    public class WintoneReader : IDisposable
     {
         #region "SDK"
 
@@ -167,32 +167,58 @@ namespace WintoneLib.Core.CardReader
             int nConFig = pSetConfigByFile(fileName);
         }
 
-        public CardType ScanDocument()
+        public ScanResponse ScanDocument(int dg, int saveImage = 3, bool viz = true)
         {
-            if (!IsReady) return CardType.None;
+            if (!IsReady) return null;
 
             if (!IsDeviceOnline)
             {
                 m_ErrorMessage = "Reader is offline. Please check power and cable.";
-                return CardType.None;
+                return null;
             }
-
-            int nDG = 6150;
-            int nSaveImage = 3;
-
-            bool bVIZ = true;
 
             int cardType = 0;
 
-            pSetRecogDG(nDG);
-            pSetSaveImageType(nSaveImage);
-            pSetRecogVIZ(bVIZ);
+            pSetRecogDG(dg);
+            pSetSaveImageType(saveImage);
+            pSetRecogVIZ(viz);
 
             int nRet = pAutoProcessIDCard(ref cardType);
 
-            if (nRet > 0) return (CardType)cardType;
+            if (nRet > 0) return new ScanResponse(nRet, cardType);
 
-            return CardType.None;
+            return null;
+        }
+
+        public string GetSerialNo()
+        {
+            var serialNo = new string('\0', 16);
+            int nRet = pGetDeviceSN(serialNo, 16);
+
+            if (nRet == 0) return serialNo.Trim('\0');
+
+            return null;
+        }
+
+        public string GetDeviceName()
+        {
+            var result = new string('\0', 128);
+
+            pGetCurrentDevice(result, 128);
+            return result.Trim('\0');
+        }
+
+        public string GetSDKVersion()
+        {
+            var result = new string('\0', 128);
+
+            pGetVersionInfo(result, 128);
+            return result.Trim('\0');
+        }
+
+        public void SaveImage(string fileName, int nType)
+        {
+            pSaveImageEx(fileName, nType);
         }
 
         public NameValueCollection GetContent()
@@ -302,5 +328,18 @@ namespace WintoneLib.Core.CardReader
 
             pFreeIDCard();
         }
+    }
+
+    public class ScanResponse
+    {
+        public ScanResponse() { }
+        public ScanResponse(int result, int cardType)
+        {
+            ScanResult = result;
+            CardType = cardType;
+        }
+
+        public int ScanResult { get; set; }
+        public int CardType { get; set; }
     }
 }

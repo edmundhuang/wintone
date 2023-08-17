@@ -137,7 +137,7 @@ namespace WintoneLib.Core
 
             int nConFig = pSetConfigByFile(Path.Combine(LibPath, Config_File_Name));
 
-            LoadDLL();
+            //LoadDLL();
 
             return true;
         }

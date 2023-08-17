@@ -4,20 +4,43 @@ namespace WintoneLib.Core.CardReader
 {
     public class CardReader : WintoneReader, ICardReader
     {
-        public NameValueCollection Content => throw new System.NotImplementedException();
+        private IReaderOption _readerOption;
 
-        public NameValueCollection DigitalContent => throw new System.NotImplementedException();
-
-
-        private CardType m_CardType = CardType.None;
-        public CardType CardType
+        public void Init(IReaderOption readerOption)
         {
-            get { return m_CardType; }
+            _readerOption = readerOption;
+
+            var result = LoadKernel(_readerOption.FullKernelPath);
+
+            if (!result) return;
+
+            var userResult = UserValidate(_readerOption.UserId, _readerOption.LibraryPath);
+
+            if (!userResult) return;
+
+            SetConfigFile(_readerOption.FullConfigPath);
         }
 
-        public bool Scan()
+        public int Scan(string saveImageFileName = null, int dg = 6150, int imageType = 3, bool vz = true)
         {
-            throw new System.NotImplementedException();
+            if (!IsReady) return -100;
+
+            var result = ScanDocument(dg, imageType, vz);
+
+            if (result == null) return -100;
+
+            CardType = (CardType)result.CardType;
+
+            if (result.ScanResult > 0 && !string.IsNullOrEmpty(saveImageFileName))
+                SaveImage(saveImageFileName, imageType);
+
+            return result.ScanResult;
         }
+
+        public NameValueCollection Content { get => GetContent(); }
+
+        public NameValueCollection DigitalContent { get => GetDigitalContent(); }
+
+        public CardType CardType { get; set; }
     }
 }

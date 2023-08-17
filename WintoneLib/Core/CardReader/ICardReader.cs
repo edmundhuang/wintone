@@ -1,11 +1,11 @@
 ﻿using System.Collections.Specialized;
-using System.IO;
 
 namespace WintoneLib.Core.CardReader
 {
     public interface ICardReader
     {
-        bool Scan();
+        void Init(IReaderOption readerOption);
+        int Scan(string saveImageFileName = null, int dg = 6150, int imageType = 3, bool vz = true);
         NameValueCollection Content { get; }
         NameValueCollection DigitalContent { get; }
 
