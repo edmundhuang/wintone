@@ -6,7 +6,7 @@ namespace WintoneLib.Core.CardReader
     {
         private IReaderOption _readerOption;
 
-        public void Init(IReaderOption readerOption)
+        public virtual void Init(IReaderOption readerOption)
         {
             _readerOption = readerOption;
 
@@ -21,7 +21,7 @@ namespace WintoneLib.Core.CardReader
             SetConfigFile(_readerOption.FullConfigPath);
         }
 
-        public int Scan(string saveImageFileName = null, int dg = 6150, int imageType = 3, bool vz = true)
+        public virtual int Scan(string saveImageFileName = null, int dg = 6150, int imageType = 3, bool vz = true)
         {
             if (!IsReady) return -100;
 
@@ -37,9 +37,11 @@ namespace WintoneLib.Core.CardReader
             return result.ScanResult;
         }
 
-        public NameValueCollection Content { get => GetContent(); }
+        public virtual bool SupportDigital { get => CardType == CardType.WithId || CardType== CardType.BarcodeWithId; }
 
-        public NameValueCollection DigitalContent { get => GetDigitalContent(); }
+        public virtual NameValueCollection Content { get => GetContent(); }
+
+        public virtual NameValueCollection DigitalContent { get => GetDigitalContent(); }
 
         public CardType CardType { get; set; }
     }

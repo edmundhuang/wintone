@@ -32,9 +32,10 @@ namespace WintoneLib.Core.CardReader
 
             if(response<0)
             {
-
+                
             }
 
+            
         }
 
         private void WriteLog(string message)
