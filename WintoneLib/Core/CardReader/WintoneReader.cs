@@ -156,10 +156,13 @@ namespace WintoneLib.Core.CardReader
             return true;
         }
 
-        public bool DocumentChanged()
+        public bool DocumentChanged
         {
-            int nRet = pDetectDocument();
-            return nRet == 1;
+            get
+            {
+                int nRet = pDetectDocument();
+                return nRet == 1;
+            }
         }
 
         public void SetConfigFile(string fileName)

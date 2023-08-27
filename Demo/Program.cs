@@ -1,14 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Demo.Hosted;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using System;
-using System.IO;
-using WintoneLib.Core;
 using WintoneLib.Core.CardReader;
-using WintoneLib.Passports;
 
-namespace WintoneConsole
+namespace Demo
 {
     public class Program
     {
@@ -22,6 +19,7 @@ namespace WintoneConsole
                 host.StartAsync();
 
                 var app = host.Services.GetRequiredService<App>();
+
                 app.Run();
 
                 host.StopAsync();
@@ -51,12 +49,16 @@ namespace WintoneConsole
 
         private static void RegisterServices(IServiceCollection services)
         {
-            //custom service
-            services.AddSingleton<ReaderManager>();
+            services.AddReaderService(Configuration);
+
+            services.AddHostedService<ReaderHostedService>();
+
+            ////custom service
+            //services.AddSingleton<ReaderManager>();
 
 
-            //configuration 
-            services.Configure<WintoneOptions>(Configuration.GetSection(WintoneOptions.Key));
+            ////configuration 
+            //services.Configure<WintoneOptions>(Configuration.GetSection(WintoneOptions.Key));
         }
 
         public static void InitSerialLog()

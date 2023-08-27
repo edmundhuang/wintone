@@ -16,7 +16,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Clients", "1. Clients", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WintoneConsole", "WintoneConsole\WintoneConsole.csproj", "{E063458F-3AFD-4FF3-8D0B-D6280633F6CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WintoneLib", "WintoneLib\WintoneLib.csproj", "{240DB426-2029-4595-B049-84007DB943F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WintoneLib", "WintoneLib\WintoneLib.csproj", "{240DB426-2029-4595-B049-84007DB943F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{6FFFEC92-A983-4CC4-A58D-8A1A42A5343B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,10 @@ Global
 		{240DB426-2029-4595-B049-84007DB943F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{240DB426-2029-4595-B049-84007DB943F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{240DB426-2029-4595-B049-84007DB943F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FFFEC92-A983-4CC4-A58D-8A1A42A5343B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FFFEC92-A983-4CC4-A58D-8A1A42A5343B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FFFEC92-A983-4CC4-A58D-8A1A42A5343B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FFFEC92-A983-4CC4-A58D-8A1A42A5343B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +50,7 @@ Global
 		{A9CA86E4-E247-491B-9CBF-04463878B9A4} = {C95031E1-B55E-4558-A44E-DFB81032810D}
 		{E063458F-3AFD-4FF3-8D0B-D6280633F6CC} = {C95031E1-B55E-4558-A44E-DFB81032810D}
 		{240DB426-2029-4595-B049-84007DB943F2} = {C95031E1-B55E-4558-A44E-DFB81032810D}
+		{6FFFEC92-A983-4CC4-A58D-8A1A42A5343B} = {C95031E1-B55E-4558-A44E-DFB81032810D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E0949FA0-8ABD-4CFB-B5FD-32B2279DCDA7}

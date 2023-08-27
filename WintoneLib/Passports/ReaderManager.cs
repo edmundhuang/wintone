@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Timers;
 using WintoneLib.Core;
+using WintoneLib.Core.CardReader;
 
 namespace WintoneLib.Passports
 {
